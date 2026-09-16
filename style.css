@@ -1,0 +1,161 @@
+/* Hit It Straight Golf Academy. Preview build for client review.
+   ONE stylesheet for every page. Nav, footer and section rhythm are shared,
+   so nothing drifts page to page. Layouts here stay deliberately simple
+   because the real build has to be reproducible inside GoDaddy
+   Websites + Marketing, which has fixed section templates. */
+
+:root{
+  --green:#1d4f3f;
+  --green-d:#133528;
+  --green-l:#2c6b56;
+  --gold:#b8901f;
+  --gold-l:#e8c76a;
+  --cream:#f8f5ee;
+  --paper:#ffffff;
+  --ink:#1a1a18;
+  --muted:#5c5b55;
+  --line:#e2ddcf;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--paper);
+     font-size:17px;line-height:1.65}
+img{max-width:100%}
+a{color:var(--green)}
+
+.wrap{width:min(1080px,92vw);margin:0 auto}
+.wrap.narrow{width:min(760px,92vw)}
+.center{text-align:center}
+
+/* preview ribbon */
+.pv{background:var(--gold);color:#241c05;text-align:center;font-size:12px;
+    letter-spacing:.09em;text-transform:uppercase;padding:7px 12px;font-weight:700}
+
+/* ---------- shared header ---------- */
+header.site{position:sticky;top:0;z-index:50;background:var(--paper);
+  border-bottom:1px solid var(--line);box-shadow:0 1px 10px rgba(0,0,0,.05)}
+.bar{display:flex;align-items:center;gap:18px;padding:12px 0;flex-wrap:wrap}
+.brand{text-decoration:none;color:var(--ink);line-height:1.15;margin-right:auto}
+.brand b{display:block;font-family:var(--serif);font-size:21px;color:var(--green)}
+.brand span{display:block;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+header nav{display:flex;gap:4px;flex-wrap:wrap}
+header nav a{text-decoration:none;color:var(--ink);font-size:14.5px;font-weight:600;
+  padding:8px 11px;border-radius:5px}
+header nav a:hover{background:var(--cream);color:var(--green)}
+header nav a.on{color:var(--green);box-shadow:inset 0 -2.5px 0 var(--gold)}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-block;background:var(--green);color:#fff;text-decoration:none;
+  font-weight:700;padding:13px 24px;border-radius:5px;border:0;cursor:pointer;
+  font-size:16px;font-family:inherit}
+.btn:hover{background:var(--green-d)}
+.btn.sm{padding:9px 15px;font-size:14px;white-space:nowrap}
+.btn.big{padding:16px 30px;font-size:17px}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.btns .btn:nth-child(2){background:transparent;color:var(--green);box-shadow:inset 0 0 0 2px var(--green)}
+.btns .btn:nth-child(2):hover{background:var(--green);color:#fff}
+
+/* ---------- hero ---------- */
+.hero{background:linear-gradient(160deg,var(--green-d),var(--green) 55%,var(--green-l));
+  color:#fff;display:grid;grid-template-columns:1.15fr .85fr;gap:0;align-items:center}
+.hero .wrap{padding:56px 0;width:min(560px,90%);margin-left:max(4vw,calc((100vw - 1080px)/2))}
+.hero h1{font-family:var(--serif);font-size:clamp(30px,4.4vw,46px);line-height:1.12;
+  margin:0 0 14px;font-weight:600}
+.hero .lede{font-size:19px;color:var(--gold-l);margin:0 0 16px;font-weight:600}
+.hero-body p{margin:0 0 12px;color:#e6efe9;font-size:16.5px}
+.hero .btn{background:var(--gold);color:#241c05}
+.hero .btn:hover{background:var(--gold-l)}
+.hero .btns .btn:nth-child(2){background:transparent;color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.65)}
+.hero .btns .btn:nth-child(2):hover{background:#fff;color:var(--green-d)}
+.hero-photo{min-height:340px;height:100%;background:
+   repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 14px,transparent 14px 28px),var(--green-l);
+  display:flex;align-items:center;justify-content:center;padding:26px}
+.hero-photo span{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.82);text-align:center;font-weight:700;line-height:1.7;max-width:300px}
+.hero-photo span em{display:block;font-style:normal;font-weight:400;text-transform:none;
+  letter-spacing:0;font-size:13px;margin-top:9px;opacity:.9;line-height:1.55}
+
+/* three column value blocks */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:18px;margin:20px 0 4px}
+.col{background:var(--cream);border-top:3px solid var(--gold);padding:20px 22px;border-radius:3px}
+.col h3{margin:0 0 9px;font-family:var(--serif);font-size:19px;color:var(--green-d);font-weight:600}
+.col p{margin:0;font-size:15.5px;line-height:1.6}
+.sec.alt .col{background:var(--paper)}
+
+/* ---------- sections ---------- */
+.sec{padding:54px 0;border-bottom:1px solid var(--line)}
+.sec.alt{background:var(--cream)}
+.sec h2{font-family:var(--serif);font-size:clamp(23px,3vw,31px);line-height:1.2;
+  margin:0 0 12px;color:var(--green-d);font-weight:600}
+.sec .lede{font-size:18px;color:var(--muted);margin:0 0 18px}
+.sec p{margin:0 0 14px}
+.sec .btn{margin-top:8px}
+.band{background:var(--green-d);color:#fff;border-bottom:0}
+.band h2{color:#fff}
+.band p{color:#d8e4dd}
+.band .btn{background:var(--gold);color:#241c05}
+
+/* lists */
+ul.plain{margin:0 0 14px;padding-left:20px}
+ul.plain li{margin-bottom:8px}
+ul.pricelist{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+ul.pricelist li{padding:15px 2px;border-bottom:1px solid var(--line);display:block}
+
+/* testimonials */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:16px;margin-top:8px}
+.cards blockquote{margin:0;background:var(--paper);border:1px solid var(--line);
+  border-top:3px solid var(--gold);padding:20px;font-size:15.5px;line-height:1.6;border-radius:3px}
+
+/* video */
+.vid{position:relative;padding-top:56.25%;margin:0 0 20px;background:#000;border-radius:5px;overflow:hidden}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+/* gallery + photo slots */
+.gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:18px 0}
+.ph{aspect-ratio:4/3;background:
+   repeating-linear-gradient(45deg,var(--cream) 0 12px,#efeadc 12px 24px);
+  border:1px dashed #c6bfa9;display:flex;align-items:center;justify-content:center;border-radius:4px}
+.ph span{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:#8a8570;font-weight:700}
+.note{font-size:14px;color:var(--muted);font-style:italic}
+
+/* the NEEDED chip. deliberately loud. it is a to do list for the client. */
+.need{display:inline;background:#fff2c7;color:#6d4c00;border-bottom:2px solid var(--gold);
+  padding:1px 6px;border-radius:3px;font-size:.88em;font-weight:700;letter-spacing:.01em}
+
+/* contact form */
+.contact form{display:grid;gap:13px;max-width:520px;margin:20px 0 14px}
+.contact label{display:grid;gap:5px;font-size:14px;font-weight:700;color:var(--green-d)}
+.contact input,.contact textarea{font:inherit;font-size:16px;padding:11px 12px;
+  border:1px solid #c9c3b2;border-radius:5px;background:var(--paper);font-weight:400;color:var(--ink)}
+.contact input:focus,.contact textarea:focus{outline:2px solid var(--green);outline-offset:1px}
+.contact button{justify-self:start}
+.callout{background:var(--cream);border-left:4px solid var(--gold);padding:13px 16px;font-weight:600}
+
+/* the per page ask list */
+.asks{background:#fffaf0;border-top:3px solid var(--gold)}
+.asks h2{color:#6d4c00}
+.asks ol{padding-left:22px}
+.asks li{margin-bottom:10px;font-size:15.5px}
+
+/* ---------- shared footer ---------- */
+footer.site{background:var(--green-d);color:#cddad3;padding:40px 0 46px;font-size:15px}
+footer.site .fbrand{font-family:var(--serif);font-size:20px;color:#fff;margin:0 0 10px}
+footer.site p{margin:0 0 12px}
+footer.site a{color:var(--gold-l)}
+footer .legal{font-size:12.5px;color:#93a69d;line-height:1.6}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr}
+  .hero .wrap{margin:0 auto;padding:40px 0 34px;width:92vw}
+  .hero-photo{min-height:190px;order:-1}
+  .bar{gap:10px}
+  .brand{width:100%;margin-bottom:2px}
+  header nav{order:3;width:100%;justify-content:flex-start}
+  header nav a{padding:7px 9px;font-size:14px}
+  .sec{padding:38px 0}
+  body{font-size:16.5px}
+}
+@media print{.pv,header.site{display:none}}
