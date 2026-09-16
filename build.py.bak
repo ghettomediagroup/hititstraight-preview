@@ -37,17 +37,6 @@ def as_columns(bl):
         out.append((m.group(1).strip(), m.group(2).strip()))
     return out or None
 
-def photo_label(t):
-    """Say what picture belongs here. Never comment on the client's existing photos
-    and never refer to a shoot that has not been booked."""
-    if not t: return 'A photo of Dion coaching at Ravisloe goes here.'
-    t = re.sub(r'\[CLIENT INPUT:.*?\]', '', t, flags=re.S)
-    for bad in [r'[^.]*\b(2017|Facebook export|old set|shoot|stock)\b[^.]*\.', r'[^.]*\bReplace\b[^.]*\.']:
-        t = re.sub(bad, '', t, flags=re.I)
-    t = re.sub(r'\s+', ' ', t).strip()
-    first = re.split(r'(?<=[.!?])\s+', t)[0] if t else ''
-    return first or 'A photo of Dion coaching at Ravisloe goes here.'
-
 def short_note(t, n=1):
     """First sentence of a long imageNote, for a photo slot label."""
     if not t: return ''
@@ -71,35 +60,19 @@ def kind(s):
     if 'gallery' in t or 'photo' in t: return 'gallery'
     return 'content'
 
-def resolve(tgt, cta):
-    """Work out where a button actually goes. Label intent wins over the target string,
-    because the pack sometimes describes a phone action on a Donate button."""
-    t = re.sub(r'\[CLIENT INPUT:.*?\]', '', tgt or '', flags=re.S).strip()
-    lab = (cta or '').strip(); L = lab.lower(); T = t.lower()
-    if 'needs giving link' in T: return None          # deliberately dead until the client supplies it
-    if any(w in L for w in ('donate','give','gift','support')): return 'donate.html'
-    if 'call' in L or re.search(r'\d{3}\D*\d{3}\D*\d{4}', lab): return f'tel:{PHONE_T}'
-    if T.startswith('tel:') or 'phone' in T or re.search(r'\d{3}\D*\d{3}\D*\d{4}', t): return f'tel:{PHONE_T}'
-    if 'section on this page' in T or t.startswith('#'): return '#request'
-    if any(w in T for w in ('donate','giving')): return 'donate.html'
-    if any(w in T for w in ('lesson','inquiry','request')): return 'lessons.html'
-    if 'mission' in T or 'h-i-s-g-a' in T: return 'mission.html'
-    if 'madkins' in T or 'coach' in T: return 'coach.html'
-    return None
-
-def render(s, first, formed=None):
+def render(s, first):
     k = kind(s); k = 'hero' if first else k
     hl, sub = s.get('headline',''), s.get('subhead','')
     body, bl = s.get('body',''), s.get('bullets') or []
     cta, tgt = s.get('ctaLabel',''), (s.get('ctaTarget','') or '')
     img, alt = s.get('imageNote',''), s.get('altText','')
 
-    href = resolve(tgt, cta)
-    # a button with nowhere real to go must never render as a live link
-    btn = (f'<a class="btn" href="{href}">{esc(cta)}</a>' if (cta and href)
-           else (f'<p><span class="need">NEEDED: a destination for the "{esc(cta)}" button. '
-                 f'{esc(re.sub(r"^NEEDS GIVING LINK$","we need the live giving web address",tgt or ""))}</span></p>'
-                 if cta else ''))
+    href = f'tel:{PHONE_T}' if ('phone' in tgt.lower() or PHONE_D in tgt) else \
+           ('donate.html' if 'donate' in tgt.lower() else
+            'lessons.html' if ('lesson' in tgt.lower() or 'inquiry' in tgt.lower()) else
+            'mission.html' if ('mission' in tgt.lower() or 'h-i-s-g-a' in tgt.lower()) else
+            'coach.html' if 'madkins' in tgt.lower() else '#')
+    btn = f'<a class="btn" href="{href}">{esc(cta)}</a>' if cta else ''
 
     if k == 'hero':
         dup = (href == f'tel:{PHONE_T}') or (PHONE_D in (cta or ''))
@@ -111,16 +84,14 @@ def render(s, first, formed=None):
     <div class="hero-body">{paras(body)}</div>
     <div class="btns"><a class="btn big" href="tel:{PHONE_T}">Call {PHONE_D}</a>{second}</div>
   </div>
-  <div class="hero-photo"><span>Photo<em>{esc(photo_label(img))}</em></span></div>
+  <div class="hero-photo"><span>Photo slot<em>{esc(short_note(img)) or "Replace with a photo from the Ravisloe shoot."}</em></span></div>
 </section>'''
 
     if k == 'video':
         return f'''<section class="sec video"><div class="wrap narrow">
   <h2>{chips(hl)}</h2>{f'<p class="lede">{chips(sub)}</p>' if sub else ''}
-  <div class="vidblock"><strong>Golf Channel segment, 2019</strong>
-    <span>This clip will sit here. It does not play yet: embedding is restricted on the Vimeo
-    account that hosts it, which is not owned by the academy. It does not currently play on
-    hititstraightgolfacademy.com either.</span></div>
+  <div class="vid"><iframe src="https://player.vimeo.com/video/339743333" title="Dion Madkins on Golf Channel"
+    frameborder="0" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
   {paras(body)}{btn}</div></section>'''
 
     if k == 'list':
@@ -135,30 +106,26 @@ def render(s, first, formed=None):
   <h2>{chips(hl)}</h2><div class="cards">{cards}</div></div></section>'''
 
     if k == 'contact':
-        showform = not (formed and formed.get('done'))
-        if formed is not None: formed['done'] = True
         rows = ''.join(f'<li>{chips(b)}</li>' for b in bl)
-        return f'''<section class="sec contact" id="request"><div class="wrap narrow">
+        return f'''<section class="sec contact"><div class="wrap narrow">
   <h2>{chips(hl)}</h2>{f'<p class="lede">{chips(sub)}</p>' if sub else ''}
   {paras(body)}{f'<ul class="plain">{rows}</ul>' if rows else ''}
-  {'''<form onsubmit="alert('Preview only. The real form will live in GoDaddy.');return false">
+  <form onsubmit="alert('Preview only. The real form will live in GoDaddy.');return false">
     <label>Name<input required></label><label>Phone<input type="tel" required></label>
     <label>Email<input type="email" required></label><label>Message<textarea rows="3"></textarea></label>
     <button class="btn" type="submit">Send</button>
-  </form>''' if showform else ''}
+  </form>
   <p class="callout">Or just call <a href="tel:{PHONE_T}">{PHONE_D}</a>.</p></div></section>'''
 
     if k == 'cta':
-        dup2 = (href == f'tel:{PHONE_T}') or (PHONE_D in (cta or '')) or ('call' in (cta or '').lower())
-        second2 = '<a class="btn big" href="lessons.html">Request a Lesson</a>' if dup2 else btn
         return f'''<section class="sec band"><div class="wrap narrow center">
   <h2>{chips(hl)}</h2>{paras(body)}
-  <div class="btns"><a class="btn big" href="tel:{PHONE_T}">Call {PHONE_D}</a>{second2}</div></div></section>'''
+  <div class="btns"><a class="btn big" href="tel:{PHONE_T}">Call {PHONE_D}</a>{btn}</div></div></section>'''
 
     if k == 'gallery':
         return f'''<section class="sec"><div class="wrap"><h2>{chips(hl)}</h2>{paras(body)}
   <div class="gal">{''.join(f'<div class="ph"><span>PHOTO SLOT {i}</span></div>' for i in range(1,5))}</div>
-  <p class="note">Photographs go here.</p></div></section>'''
+  <p class="note">Photo slots fill from the Ravisloe shoot.</p></div></section>'''
 
     cols = as_columns(bl)
     if cols:
@@ -176,15 +143,14 @@ def page(key):
     p = pages[key]; me = FILE[key]
     nav = ''.join(f'<a href="{h}"{" class=on" if h==me else ""}>{t}</a>' for h,t in NAV)
     secs = [s for s in sorted(p['sections'], key=lambda x:x.get('order',0)) if not is_internal(s)]
-    formed = {'done': False}
-    body = ''.join(render(s, i==0, formed) for i,s in enumerate(secs))
+    body = ''.join(render(s, i==0) for i,s in enumerate(secs))
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>{esc(p.get('seoTitle') or p['pageTitle'])}</title>
 <meta name="description" content="{esc(p.get('seoDescription',''))}">
 <link rel="stylesheet" href="style.css"></head><body>
-<div class="pv">Preview. Not the live site. Content subject to client review.</div>
+<div class="pv">PREVIEW &mdash; not the live site &middot; built for Hit It Straight Golf Academy by Ghetto Media Group</div>
 <header class="site"><div class="wrap bar">
   <a class="brand" href="index.html"><b>Hit It Straight</b><span>Golf Academy</span></a>
   <nav>{nav}</nav>

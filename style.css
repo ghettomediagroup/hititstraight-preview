@@ -149,13 +149,27 @@ footer .legal{font-size:12.5px;color:#93a69d;line-height:1.6}
 
 @media (max-width:820px){
   .hero{grid-template-columns:1fr}
-  .hero .wrap{margin:0 auto;padding:40px 0 34px;width:92vw}
-  .hero-photo{min-height:190px;order:-1}
-  .bar{gap:10px}
-  .brand{width:100%;margin-bottom:2px}
-  header nav{order:3;width:100%;justify-content:flex-start}
-  header nav a{padding:7px 9px;font-size:14px}
+  .hero .wrap{margin:0 auto;padding:34px 0 30px;width:92vw}
+  /* the headline leads on a phone. the photo does not push it below the fold. */
+  .hero-photo{min-height:104px;order:1}
+  /* one compact sticky row: brand plus the phone. nav scrolls on a single line
+     underneath instead of wrapping into three rows and eating a third of the screen. */
+  .bar{gap:8px;padding:8px 0;flex-wrap:wrap}
+  .brand b{font-size:18px}
+  .brand span{font-size:9.5px;letter-spacing:.18em}
+  header nav{order:3;width:100%;justify-content:flex-start;flex-wrap:nowrap;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    gap:2px;padding-bottom:2px;margin-bottom:-2px}
+  header nav::-webkit-scrollbar{display:none}
+  header nav a{padding:6px 10px;font-size:14px;white-space:nowrap}
   .sec{padding:38px 0}
   body{font-size:16.5px}
 }
 @media print{.pv,header.site{display:none}}
+
+/* Golf Channel clip. Embedding is restricted on the Vimeo account that hosts it,
+   so we show what belongs here rather than shipping a player that errors. */
+.vidblock{background:var(--cream);border:1px dashed #c6bfa9;border-left:4px solid var(--gold);
+  border-radius:4px;padding:22px 24px;margin:0 0 20px}
+.vidblock strong{display:block;font-family:var(--serif);font-size:19px;color:var(--green-d);margin-bottom:7px}
+.vidblock span{display:block;font-size:14.5px;color:var(--muted);line-height:1.6}
