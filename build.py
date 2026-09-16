@@ -144,8 +144,6 @@ def page(key):
     nav = ''.join(f'<a href="{h}"{" class=on" if h==me else ""}>{t}</a>' for h,t in NAV)
     secs = [s for s in sorted(p['sections'], key=lambda x:x.get('order',0)) if not is_internal(s)]
     body = ''.join(render(s, i==0) for i,s in enumerate(secs))
-    asks = p.get('clientInputNeeded') or []
-    asklist = ''.join(f'<li>{esc(a)}</li>' for a in asks)
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
@@ -159,7 +157,7 @@ def page(key):
   <a class="btn sm" href="tel:{PHONE_T}">{PHONE_D}</a>
 </div></header>
 <main>{body}</main>
-{f'<section class="sec asks"><div class="wrap narrow"><h2>What we still need from you for this page</h2><p class="lede">Everything marked NEEDED above is waiting on an answer.</p><ol>{asklist}</ol></div></section>' if asks else ''}
+
 <footer class="site"><div class="wrap">
   <p class="fbrand">Hit It Straight Golf Academy</p>
   <p>Ravisloe Country Club, 18231 South Park Avenue, Homewood, IL 60430<br>
